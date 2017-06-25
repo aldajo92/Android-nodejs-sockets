@@ -17,11 +17,8 @@ function render (data) {
 }
 
 function addMessage(e) {  
-  var message = {
-    author: document.getElementById('username').value,
-    text: document.getElementById('texto').value
-  };
+  var message = document.getElementById('texto').value;
 
-  socket.emit('new-message', message);
+  socket.emit('web-message', message);
   return false;
 }

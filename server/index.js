@@ -1,7 +1,14 @@
 // based on https://carlosazaustre.es/blog/websockets-como-utilizar-socket-io-en-tu-aplicacion-web/
 
 var express = require('express');
-var app = express();  
+var app = express();
+var SerialPort = require('serialport');
+
+SerialPort.list(function (err, ports) {
+  ports.forEach(function(port) {
+    console.log(port.comName);
+  });
+});
 
 const port = 8080;
 const hostname = '192.168.1.15';
@@ -29,9 +36,9 @@ function initServer() {
         console.log('Alguien se ha conectado con Sockets');
         socket.emit('messages', messages);
 
-        socket.on('new-message', function(data) {
-            messages.push(data);
-            io.sockets.emit('messages', messages);
+        socket.on('web-message', function(data) {
+            //messages.push(data);
+            io.sockets.emit('android-message', data);
             console.log(data);
         });
 
