@@ -3,6 +3,9 @@
 var express = require('express');
 var app = express();
 var SerialPort = require('serialport');
+var ip = require('ip');
+
+console.log( ip.address() );
 
 SerialPort.list(function (err, ports) {
   ports.forEach(function(port) {
@@ -11,7 +14,7 @@ SerialPort.list(function (err, ports) {
 });
 
 const port = 8080;
-const hostname = '192.168.1.15';
+const hostname = ip.address();
 
 var messages = [{  
   id: 1,
