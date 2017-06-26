@@ -76,8 +76,7 @@ if ( options.port ){
         });
 
         eventEmitter.on('serialport-data', function (data){
-
-            var formatted = data.replace("      ", "");
+            var formatted = data.replace(/      /g, "");
             io.sockets.emit('android-message', formatted);
             console.log(formatted);
         });
