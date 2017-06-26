@@ -100,9 +100,8 @@ if ( options.port ){
               net: net_data
             }];
 
-            //io.sockets.emit('android-message', formatted);
+            io.sockets.emit('android-message', datamodel);
             console.log(datamodel);
-            //console.log(values);
         });
 
     }
