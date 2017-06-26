@@ -35,18 +35,15 @@ if ( options.port ){
     const serialPortName = options.port;
     const serialPortBaudRate = 9600;
 
-    function initSerialPort(){
-        var serialPort1 = new SerialPort(serialPortName, {
-            baudRate: serialPortBaudRate,
-            autoOpen: false
-        });
-
-        serialPort1.open(function (err) {
-            if (err) {
-              console.log('Error opening port: ', err.message);
+    var errorport = function(err){
+      if (err) {
+              console.log('Error on write: ', err.message);
               process.exit();
-            }
-        });
+      }
+    }
+
+    function initSerialPort(){
+        var serialPort1 = new SerialPort(serialPortName, { baudRate: serialPortBaudRate }, errorport);
 
         serialPort1.on('open', function() {
             console.log(`${ serialPort1.path } connected!!!`)
