@@ -48,7 +48,7 @@ if ( options.port ){
         });
 
         serialPort1.on('data', function (data) {
-            eventEmitter.emit('seriaport-data', data);
+            eventEmitter.emit('serialport-data', data);
         });
     }
 
@@ -65,7 +65,7 @@ if ( options.port ){
         app.get('/', (req, res) => { res.send('Hello world!') });
         app.post('/', (req, res) => {});
 
-        io.on('connection', function(socket) {  
+        io.on('connection', function(socket) {
             console.log(`Socket ${socket.id} connected...`);
 
             socket.on('web-message', function(data) {
@@ -73,7 +73,7 @@ if ( options.port ){
                 console.log(data);
             });
 
-            eventEmitter.on('seriaport-data', function (data){
+            eventEmitter.on('serialport-data', function (data){
                 console.log(data);
             });
 
