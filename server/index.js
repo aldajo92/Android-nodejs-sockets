@@ -1,22 +1,18 @@
 // based on https://carlosazaustre.es/blog/websockets-como-utilizar-socket-io-en-tu-aplicacion-web/
-
 const commandLineArgs = require('command-line-args')
 var express = require('express');
 var app = express();
 var SerialPort = require('serialport');
 var ip = require('ip');
+var events = require('events');
 
 const options = commandLineArgs(
   [
     { name: 'showports', alias: 's', type: Boolean, description: 'Display serial ports.' },
-    { name: 'port', alias: 'p', type: String, description: 'connect serial ports.'}
+    { name: 'port', alias: 'p', type: String, description: 'connect serial ports.' }
   ],
-  { 
-      partial: true 
-  }
+  { partial: true }
 )
-
-console.log(options)
 
 if( options.showports ){
 
@@ -35,14 +31,16 @@ if ( options.port ){
     const serialPortName = options.port;
     const serialPortBaudRate = 9600;
 
-    var errorport = function(err){
-      if (err) {
-              console.log('Error on write: ', err.message);
-              process.exit();
-      }
-    }
+    var eventEmitter = new events.EventEmitter();
 
     function initSerialPort(){
+        var errorport = function(err){
+          if (err) {
+                  console.log('Error on write: ', err.message);
+                  process.exit();
+          }
+        }
+
         var serialPort1 = new SerialPort(serialPortName, { baudRate: serialPortBaudRate }, errorport);
 
         serialPort1.on('open', function() {
@@ -50,7 +48,7 @@ if ( options.port ){
         });
 
         serialPort1.on('data', function (data) {
-            console.log('Data: ' + data);
+            eventEmitter.emit('seriaport-data', data);
         });
     }
 
@@ -71,13 +69,15 @@ if ( options.port ){
             console.log(`Socket ${socket.id} connected...`);
 
             socket.on('web-message', function(data) {
-                //messages.push(data);
                 io.sockets.emit('android-message', data);
                 console.log(data);
             });
 
+            eventEmitter.on('seriaport-data', function (data){
+                console.log(data);
+            });
+
         });
-        
     }
 
     initSerialPort();
