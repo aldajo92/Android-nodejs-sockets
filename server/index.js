@@ -26,7 +26,7 @@ if( options.showports ){
 
 if ( options.port ){
 
-    const port = 8080;
+    const port = 8090;
     const hostname = ip.address();
     const serialPortName = options.port;
     const serialPortBaudRate = 9600;
