@@ -89,16 +89,20 @@ if ( options.port ){
             formatted = formatted.replace(/ kg /g,":");
             values = formatted.split("\r\n");
 
+            var gross_data = values[0].split(":")[0]
+            var tare_data = values[1].split(":")[0]
+            var net_data = values[2].split(":")[0]
+
             var datamodel = [{
               portname: portname,
-              gross: "",
-              tare: "",
-              net: ""
+              gross: gross_data,
+              tare: tare_data,
+              net: net_data
             }];
 
             //io.sockets.emit('android-message', formatted);
-            console.log(formatted);
-            console.log(values);
+            console.log(datamodel);
+            //console.log(values);
         });
 
     }
