@@ -73,12 +73,13 @@ if ( options.port ){
                 console.log(data);
             });
 
-            eventEmitter.on('serialport-data', function (data){
-                io.sockets.emit('android-message', data);
-                console.log(data);
-            });
-
         });
+
+        eventEmitter.on('serialport-data', function (data){
+            io.sockets.emit('android-message', data);
+            console.log(data);
+        });
+
     }
 
     initSerialPort();
