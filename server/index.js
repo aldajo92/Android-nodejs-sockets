@@ -48,11 +48,19 @@ if ( options.port ){
         });
 
         serialPort1.on('data', function (data) {
-            eventEmitter.emit('serialport-data', data.toString());
+            eventEmitter.emit('serialport-data', serialPort1.path, data.toString());
         });
     }
 
     function initServer() {
+
+        let datamodel = [{  
+          portname: "",
+          gross: "",
+          tare: "",
+          net: ""
+        }];
+
         const server = app.listen(port, hostname, () => { console.log(`Listening http://${hostname}:${port}`) });
         const io = require('socket.io').listen(server);
 
@@ -75,10 +83,22 @@ if ( options.port ){
 
         });
 
-        eventEmitter.on('serialport-data', function (data){
+        eventEmitter.on('serialport-data', function (portname, data){
             var formatted = data.replace(/      /g, "");
-            io.sockets.emit('android-message', formatted);
+
+            formatted = formatted.replace(/ kg /g,":");
+            values = formatted.split("\r\n");
+
+            var datamodel = [{
+              portname: portname,
+              gross: "",
+              tare: "",
+              net: ""
+            }];
+
+            //io.sockets.emit('android-message', formatted);
             console.log(formatted);
+            console.log(values);
         });
 
     }
