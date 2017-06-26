@@ -36,7 +36,7 @@ if ( options.port ){
     function initSerialPort(){
         var errorport = function(err){
           if (err) {
-                  console.log('Error on write: ', err.message);
+                  console.log('Error: ', err.message);
                   process.exit();
           }
         }
@@ -48,12 +48,12 @@ if ( options.port ){
         });
 
         serialPort1.on('data', function (data) {
-            eventEmitter.emit('serialport-data', data);
+            eventEmitter.emit('serialport-data', data.toString());
         });
     }
 
     function initServer() {
-        const server = app.listen(port, '0.0.0.0', () => { console.log(`Listening http://${hostname}:${port}`) });
+        const server = app.listen(port, hostname, () => { console.log(`Listening http://${hostname}:${port}`) });
         const io = require('socket.io').listen(server);
 
         app.use(express.static('public'));
