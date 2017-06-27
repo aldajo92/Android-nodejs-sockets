@@ -2,6 +2,12 @@
 
 ## Usage:
 
+Make sure to install all dependencies:
+
+```bash
+/> npm install
+```
+
 Run server and connect to all ports added on ```config.json```:
 ```bash
 /> node index.js
