@@ -36,7 +36,7 @@ if ( options.port ){
     function initSerialPort(){
         var errorport = function(err){
           if (err) {
-                  console.log('Error on write: ', err.message);
+                  console.log('Error: ', err.message);
                   process.exit();
           }
         }
@@ -48,11 +48,19 @@ if ( options.port ){
         });
 
         serialPort1.on('data', function (data) {
-            eventEmitter.emit('serialport-data', data);
+            eventEmitter.emit('serialport-data', serialPort1.path, data.toString());
         });
     }
 
     function initServer() {
+
+        let datamodel = [{  
+          portname: "",
+          gross: "",
+          tare: "",
+          net: ""
+        }];
+
         const server = app.listen(port, hostname, () => { console.log(`Listening http://${hostname}:${port}`) });
         const io = require('socket.io').listen(server);
 
@@ -73,11 +81,29 @@ if ( options.port ){
                 console.log(data);
             });
 
-            eventEmitter.on('serialport-data', function (data){
-                console.log(data);
-            });
-
         });
+
+        eventEmitter.on('serialport-data', function (portname, data){
+            var formatted = data.replace(/      /g, "");
+
+            formatted = formatted.replace(/ kg /g,":");
+            values = formatted.split("\r\n");
+
+            var gross_data = values[0].split(":")[0]
+            var tare_data = values[1].split(":")[0]
+            var net_data = values[2].split(":")[0]
+
+            var datamodel = {
+              portname: portname,
+              gross: gross_data,
+              tare: tare_data,
+              net: net_data
+            };
+
+            io.sockets.emit('android-message', datamodel);
+            console.log(datamodel);
+        });
+
     }
 
     initSerialPort();
