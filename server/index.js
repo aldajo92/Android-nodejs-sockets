@@ -1,10 +1,10 @@
-// based on https://carlosazaustre.es/blog/websockets-como-utilizar-socket-io-en-tu-aplicacion-web/
 const commandLineArgs = require('command-line-args')
 var express = require('express');
 var app = express();
 var SerialPort = require('serialport');
 var ip = require('ip');
 var events = require('events');
+var fs = require("fs");
 
 const options = commandLineArgs(
   [
@@ -15,59 +15,49 @@ const options = commandLineArgs(
 )
 
 if( options.showports ){
-
     SerialPort.list(function (err, ports) {
         ports.forEach(function(port) {
             console.log(port.comName);
         });
     });
 
-}
-
-if ( options.port ){
-
-    const port = 8090;
-    const hostname = ip.address();
-    const serialPortName = options.port;
-    const serialPortBaudRate = 9600;
-
+} else {
+    var loadConfig = JSON.parse(fs.readFileSync("config.json"));
+    const serialPortBaudRate = loadConfig.baudrate;
     var eventEmitter = new events.EventEmitter();
 
-    function initSerialPort(){
-        var errorport = function(err){
-          if (err) {
-                  console.log('Error: ', err.message);
-                  process.exit();
-          }
+    var errorport = function(err){
+        if (err) {
+                console.log('Error: ', err.message);
+                process.exit();
         }
+    }
 
-        var serialPort1 = new SerialPort(serialPortName, { baudRate: serialPortBaudRate }, errorport);
+    function initSerialPort(portname){
+        var serialPort = new SerialPort(portname, { baudRate: loadConfig.baudrate }, errorport);
 
-        serialPort1.on('open', function() {
-            console.log(`${ serialPort1.path } connected!!!`)
+        serialPort.on('open', function() {
+            console.log(`${ serialPort.path } connected!!!`)
         });
 
-        serialPort1.on('data', function (data) {
-            eventEmitter.emit('serialport-data', serialPort1.path, data.toString());
+        serialPort.on('data', function (data) {
+            eventEmitter.emit('serialport-data', serialPort.path, data.toString());
         });
+
+        return serialPort;
     }
 
     function initServer() {
 
-        let datamodel = [{  
-          portname: "",
-          gross: "",
-          tare: "",
-          net: ""
-        }];
-
+        const port = loadConfig.serverport;
+        const hostname = ip.address();
         const server = app.listen(port, hostname, () => { console.log(`Listening http://${hostname}:${port}`) });
         const io = require('socket.io').listen(server);
 
         app.use(express.static('public'));
 
         app.get('/hello', function(req, res) {  
-          res.status(200).send("Hello World!");
+            res.status(200).send("Hello World!");
         });
 
         app.get('/', (req, res) => { res.send('Hello world!') });
@@ -94,19 +84,30 @@ if ( options.port ){
             var net_data = values[2].split(":")[0]
 
             var datamodel = {
-              portname: portname,
-              gross: gross_data,
-              tare: tare_data,
-              net: net_data
+                portname: portname,
+                gross: gross_data,
+                tare: tare_data,
+                net: net_data
             };
 
             io.sockets.emit('android-message', datamodel);
             console.log(datamodel);
         });
-
     }
 
-    initSerialPort();
+    function initFromConfigSerialPorts(){
+        loadConfig.ports.map(function(port){
+            return initSerialPort(port);
+        });
+    }
+
+
+    if ( options.port ){
+        initSerialPort(options.port);
+    } else {   
+        initFromConfigSerialPorts();
+    }
+
     initServer();
 
 }
