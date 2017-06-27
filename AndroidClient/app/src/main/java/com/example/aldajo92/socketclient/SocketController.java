@@ -1,5 +1,8 @@
 package com.example.aldajo92.socketclient;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.net.URISyntaxException;
 
 import io.socket.client.IO;
@@ -17,7 +20,7 @@ public class SocketController implements Emitter.Listener {
 
     void connect(){
         try {
-            mSocket = IO.socket("http://192.168.1.15:8080/");
+            mSocket = IO.socket("http://192.168.1.14:8090/");
         } catch (URISyntaxException e) {
 
         }
@@ -33,8 +36,13 @@ public class SocketController implements Emitter.Listener {
 
     @Override
     public void call(Object... args) {
-        String message = (String) args[0];
-        view.onSocketDataArrive(message);
+        JSONObject data = (JSONObject) args[0];
+        try {
+            String message = data.getString("portname") + " " + data.getString("gross");
+            view.onSocketDataArrive(message);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public interface SocketView{

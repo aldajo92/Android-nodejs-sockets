@@ -9,7 +9,7 @@ var fs = require("fs");
 const options = commandLineArgs(
   [
     { name: 'showports', alias: 's', type: Boolean, description: 'Display serial ports.' },
-    { name: 'port', alias: 'p', type: String, description: 'connect serial ports.' }
+    { name: 'port', alias: 'p', type: String, description: 'Connect to an specific serial port.' }
   ],
   { partial: true }
 )

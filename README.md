@@ -1,5 +1,23 @@
 # Android and Node.js Socket
 
+## Usage:
+
+Run server and connect to all ports added on ```config.json```:
+```bash
+/> node index.js
+```
+
+Run server and connect to an specific port:
+```bash
+/> node index.js -p COM10
+```
+
+Show available ports without runnig server:
+```bash
+/> node index.js -s
+```
+If is necessary to test the socket server, a web page is available for that.
+
 ## References:
 
 - [socket.io website example](https://carlosazaustre.es/blog/websockets-como-utilizar-socket-io-en-tu-aplicacion-web/)
