@@ -1,18 +1,39 @@
-<!DOCTYPE html>  
-<html lang="en">  
-<head>  
-  <meta charset="UTF-8">
-  <title>My Aplicación con Sockets</title>
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="main.js"></script>
-</head>  
-<body>  
-  <h1>My App</h1>
-  <div id="messages"></div>
-  <br/>
-  <form onsubmit="return addMessage(this)">
-    <input type="text" id="texto" placeholder="Cuéntanos algo...">
-    <input type="submit" value="Enviar!">
-  </form>
+<!doctype html>
+<html>
+<head>
+    <title>Socket.IO Client</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font: 13px Helvetica, Arial;
+        }
+
+        #messages {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #messages li {
+            padding: 5px 10px;
+        }
+
+        #messages li:nth-child(odd) {
+            background: #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <ul id="messages"></ul>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="main.js"></script>
 </body>
+
 </html>

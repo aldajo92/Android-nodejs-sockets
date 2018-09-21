@@ -1,5 +1,5 @@
 {
-    "ports" : [ "/dev/ttyS1", "/dev/ttyS2", "/dev/ttyS3" ],
+    "ports" : [ "/dev/ttyACM0", "/dev/ttyACM1" ],
     "baudrate" : 9600,
     "serverport" : 8090
 }
